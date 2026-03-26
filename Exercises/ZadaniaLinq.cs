@@ -16,7 +16,10 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie01_StudenciZWarszawy()
     {
-        throw Niezaimplementowano(nameof(Zadanie01_StudenciZWarszawy));
+        return
+        from s in DaneUczelni.Studenci
+            where s.Miasto == "Warsaw"
+            select $"{s.NumerIndeksu} | {s.Imie} {s.Nazwisko} | {s.Miasto}";
     }
 
     /// <summary>
