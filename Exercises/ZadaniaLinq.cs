@@ -408,7 +408,7 @@ public sealed class ZadaniaLinq
         return
             from s in DaneUczelni.Studenci
             join z in DaneUczelni.Zapisy on s.Id equals z.StudentId
-            where z.CzyAktywny == true
+            where z.CzyAktywny
             group z by s.Miasto into grupa
             orderby grupa.Count() descending
             select $"{grupa.Key}, {grupa.Count()}";
