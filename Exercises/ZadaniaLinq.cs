@@ -330,7 +330,6 @@ public sealed class ZadaniaLinq
     public IEnumerable<string> Wyzwanie01_StudenciZWiecejNizJednymAktywnymPrzedmiotem()
     {
         throw Niezaimplementowano(nameof(Wyzwanie01_StudenciZWiecejNizJednymAktywnymPrzedmiotem));
-        //
     }
 
     /// <summary>
