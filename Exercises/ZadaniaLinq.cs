@@ -33,7 +33,9 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie02_AdresyEmailStudentow()
     {
-        throw Niezaimplementowano(nameof(Zadanie02_AdresyEmailStudentow));
+        return
+            from s in DaneUczelni.Studenci
+            select s.Email;
     }
 
     /// <summary>
@@ -48,7 +50,10 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie03_StudenciPosortowani()
     {
-        throw Niezaimplementowano(nameof(Zadanie03_StudenciPosortowani));
+        return
+            from s in DaneUczelni.Studenci
+            orderby s.Nazwisko, s.Imie
+            select $"{s.NumerIndeksu}, {s.Imie}, {s.Nazwisko}";
     }
 
     /// <summary>
@@ -63,7 +68,16 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie04_PierwszyPrzedmiotAnalityczny()
     {
-        throw Niezaimplementowano(nameof(Zadanie04_PierwszyPrzedmiotAnalityczny));
+        var przedmiot = 
+            (from p in DaneUczelni.Przedmioty
+            where p.Kategoria.Equals("Analytics")
+            select p).FirstOrDefault();
+
+        if (przedmiot == null)
+            return new List<string> { "Brak przedmiotu" };
+
+        return new List<string> { $"{przedmiot.Nazwa}, {przedmiot.DataStartu:yyyy.MM.dd}" };
+
     }
 
     /// <summary>
