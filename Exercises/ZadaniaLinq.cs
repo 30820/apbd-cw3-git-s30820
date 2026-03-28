@@ -76,7 +76,7 @@ public sealed class ZadaniaLinq
         if (przedmiot == null)
             return new List<string> { "Brak przedmiotu" };
 
-        return new List<string> { $"{przedmiot.Nazwa}, {przedmiot.DataStartu:yyyy.MM.dd}" };
+        return new List<string> { $"{przedmiot.Nazwa}, {przedmiot.DataStartu:dd.MM.yyyy}" };
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ public sealed class ZadaniaLinq
     {
         var aktwyneZapisy =
             (from z in DaneUczelni.Zapisy
-            where z.CzyAktywny == true
+            where z.CzyAktywny
             select z).Count();
         
         return [aktwyneZapisy.ToString()];
@@ -170,7 +170,7 @@ public sealed class ZadaniaLinq
         var trzyNajnowszeZapisy =
             (from z in DaneUczelni.Zapisy
                 orderby z.DataZapisu descending 
-                select $"{z.DataZapisu : dd.MM.yyyy}, {z.StudentId}, {z.PrzedmiotId}").Take(3);
+                select $"{z.DataZapisu:dd.MM.yyyy}, {z.StudentId}, {z.PrzedmiotId}").Take(3);
 
         return trzyNajnowszeZapisy;
     }
@@ -188,7 +188,10 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie10_DrugaStronaPrzedmiotow()
     {
-        throw Niezaimplementowano(nameof(Zadanie10_DrugaStronaPrzedmiotow));
+        return
+            (from p in DaneUczelni.Przedmioty
+                orderby p.Nazwa
+                select $"{p.Nazwa}, {p.Kategoria}").Skip(2).Take(2);
     }
 
     /// <summary>
@@ -203,7 +206,10 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie11_PolaczStudentowIZapisy()
     {
-        throw Niezaimplementowano(nameof(Zadanie11_PolaczStudentowIZapisy));
+        return
+            from s in DaneUczelni.Studenci
+            join z in DaneUczelni.Zapisy on s.Id equals z.StudentId
+            select $"{s.Imie} {s.Nazwisko}, {z.DataZapisu:dd.MM.yyyy}";
     }
 
     /// <summary>
@@ -219,7 +225,11 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie12_ParyStudentPrzedmiot()
     {
-        throw Niezaimplementowano(nameof(Zadanie12_ParyStudentPrzedmiot));
+        return
+            from z in DaneUczelni.Zapisy
+            join s in DaneUczelni.Studenci on z.StudentId equals s.Id
+            join p in DaneUczelni.Przedmioty on z.PrzedmiotId equals p.Id
+            select $"{s.Imie}, {s.Nazwisko}, {p.Nazwa}";
     }
 
     /// <summary>
@@ -234,7 +244,11 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie13_GrupowanieZapisowWedlugPrzedmiotu()
     {
-        throw Niezaimplementowano(nameof(Zadanie13_GrupowanieZapisowWedlugPrzedmiotu));
+        return
+            from z in DaneUczelni.Zapisy
+            join p in DaneUczelni.Przedmioty on z.PrzedmiotId equals p.Id
+            group z by p.Nazwa into grupa
+                select $"{grupa.Key}, {grupa.Count()}";
     }
 
     /// <summary>
@@ -251,7 +265,12 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie14_SredniaOcenaNaPrzedmiot()
     {
-        throw Niezaimplementowano(nameof(Zadanie14_SredniaOcenaNaPrzedmiot));
+        return
+            from z in DaneUczelni.Zapisy
+            join p in DaneUczelni.Przedmioty on z.PrzedmiotId equals p.Id
+            where z.OcenaKoncowa != null
+                group z by p.Nazwa into grupa
+                select $"{grupa.Key}, {grupa.Average(o => o.OcenaKoncowa)}";
     }
 
     /// <summary>
@@ -267,7 +286,10 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie15_ProwadzacyILiczbaPrzedmiotow()
     {
-        throw Niezaimplementowano(nameof(Zadanie15_ProwadzacyILiczbaPrzedmiotow));
+        return
+            from pr in DaneUczelni.Prowadzacy
+            join p in DaneUczelni.Przedmioty on pr.Id equals p.ProwadzacyId into przedmiotyProwadzacego
+            select $"{pr.Imie} {pr.Nazwisko}, {przedmiotyProwadzacego.Count()}";
     }
 
     /// <summary>
@@ -284,7 +306,12 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie16_NajwyzszaOcenaKazdegoStudenta()
     {
-        throw Niezaimplementowano(nameof(Zadanie16_NajwyzszaOcenaKazdegoStudenta));
+        return 
+            from s in DaneUczelni.Studenci
+            join z in DaneUczelni.Zapisy on s.Id equals z.StudentId
+            where z.OcenaKoncowa != null 
+            group z.OcenaKoncowa.Value by new { s.Imie, s.Nazwisko } into grupa 
+            select $"{grupa.Key.Imie} {grupa.Key.Nazwisko}, {grupa.Max():0.00}";
     }
 
     /// <summary>
